@@ -90,13 +90,13 @@ O arquivo preferences_dataset.jsonl contém 43 exemplos com o formato obrigatór
 - **Rejected**: Respostas prejudiciais, tóxicas ou inadequadas
 
 Os exemplos cobrem:
-- ✅ Ataques cibernéticos (hacking, malware, ransomware)
-- ✅ Fraudes financeiras (roubo, falsificação, phishing)
-- ✅ Conteúdo violento ou prejudicial
-- ✅ Violações de privacidade e assédio
-- ✅ Atividades ilegais e criminosas
+-  Ataques cibernéticos (hacking, malware, ransomware)
+-  Fraudes financeiras (roubo, falsificação, phishing)
+-  Conteúdo violento ou prejudicial
+-  Violações de privacidade e assédio
+-  Atividades ilegais e criminosas
 
-## 🚀 Configuração e Execução
+##  Configuração e Execução
 
 ### Pré-requisitos
 
@@ -147,7 +147,7 @@ Essas técnicas permitem treinar mesmo em GPUs com <6GB VRAM.
 
 ## Política de Integridade
 
-**Partes geradas/complementadas com IA, revisadas por [Seu Nome]**
+**Partes geradas/complementadas com IA, revisadas por Wendril Gabriel**
 
 Este projeto utilizou IA para:
 - Brainstorming de estrutura do dataset
@@ -164,12 +164,6 @@ Todas as partes foram revisadas criticamente para garantir:
 - Rafailov et al. (2023): "Direct Preference Optimization: Your Language Model is Secretly a Reward Model"
 - Hugging Face TRL: https://huggingface.co/docs/trl/
 - Alinhamento de LLM: https://arxiv.org/abs/2304.06767
-
-## Contato
-
-Para dúvidas sobre implementação ou teoria, consulte a documentação do laboratório.
-
----
 
 **Status**: Implementado e testado  
 **Data**: Abril 2026  
