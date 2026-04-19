@@ -1,0 +1,45 @@
+# Pycache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Ambientes virtuais
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Modelos treinados (grandes demais)
+dpo_model/
+*.pt
+*.bin
+*.safetensors
+
+# Dados
+*.jsonl.backup
+*.csv.backup
+
+# Logs
+*.log
+wandb/
+
+# Cache
+.cache/
+huggingface_cache/
+
+# Checkpoints de treinamento
+checkpoint-*/
+runs/
+
+# Sistema
+.env
+.env.local
