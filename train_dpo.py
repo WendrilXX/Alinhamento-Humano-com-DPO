@@ -7,8 +7,8 @@ Partes geradas/complementadas com IA, revisadas por [Seu Nome]
 import torch
 import json
 from datasets import Dataset
-from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments
-from trl import DPOTrainer
+from transformers import AutoTokenizer, AutoModelForCausalLM
+from trl import DPOTrainer, DPOConfig
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -21,7 +21,7 @@ def load_preference_dataset(path):
             if line.strip():
                 examples.append(json.loads(line))
     
-    print(f"✓ Dataset carregado com {len(examples)} exemplos")
+    print(f"Dataset carregado com {len(examples)} exemplos")
     return examples
 
 
@@ -39,7 +39,7 @@ def create_hf_dataset(examples):
         'rejected': [ex['rejected'] for ex in examples]
     })
     
-    print(f"✓ Dataset Hugging Face criado com colunas: {dataset.column_names}")
+    print(f"Dataset Hugging Face criado com colunas: {dataset.column_names}")
     return dataset
 
 
@@ -79,7 +79,7 @@ def main():
     print(f"Dados de validação: {len(eval_dataset)} exemplos")
     
     print("\nConfigurando argumentos de treino...")
-    training_args = TrainingArguments(
+    training_args = DPOConfig(
         output_dir=OUTPUT_DIR,
         num_train_epochs=3,
         per_device_train_batch_size=4,
@@ -88,14 +88,17 @@ def main():
         gradient_checkpointing=True,
         learning_rate=5e-4,
         lr_scheduler_type="linear",
-        warmup_ratio=0.1,
+        warmup_steps=100,
         fp16=device == "cuda",
+        use_cpu=device == "cpu",
         optim="paged_adamw_32bit",
         save_strategy="epoch",
         eval_strategy="epoch",
         logging_steps=10,
         save_total_limit=1,
-        seed=42
+        seed=42,
+        beta=BETA,
+        max_length=512
     )
     
     print("Argumentos configurados com paged_adamw_32bit para economia de memória")
@@ -107,10 +110,7 @@ def main():
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
-        tokenizer=tokenizer,
-        beta=BETA,
-        max_prompt_length=256,
-        max_length=512,
+        processing_class=tokenizer,
     )
     
     print(f"DPOTrainer inicializado com beta={BETA}")
