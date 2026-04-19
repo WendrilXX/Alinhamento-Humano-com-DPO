@@ -48,44 +48,37 @@ def main():
     print("Pipeline DPO - Alinhamento de LLM")
     print("=" * 60)
     
-    # Configurações
-    MODEL_NAME = "gpt2"  # Modelo compacto para demonstração
+    MODEL_NAME = "gpt2"
     DATASET_PATH = "preferences_dataset.jsonl"
     OUTPUT_DIR = "./dpo_model"
-    BETA = 0.1  # Hiperparâmetro crítico - explica no README
+    BETA = 0.1
     
-    # Verificar disponibilidade de GPU
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"\n📱 Dispositivo: {device}")
+    print(f"\nDispositivo: {device}")
     
-    # 1. Carregar modelo e tokenizer
-    print("\n1️⃣  Carregando modelo e tokenizer...")
+    print("\nCarregando modelo e tokenizer...")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     model = AutoModelForCausalLM.from_pretrained(MODEL_NAME)
-    model_ref = AutoModelForCausalLM.from_pretrained(MODEL_NAME)  # Modelo de referência
+    model_ref = AutoModelForCausalLM.from_pretrained(MODEL_NAME)
     
-    # Configurar token de preenchimento se não existir
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     
-    print(f"✓ Modelo: {MODEL_NAME}")
-    print(f"✓ Parâmetros: {sum(p.numel() for p in model.parameters()):,}")
+    print(f"Modelo: {MODEL_NAME}")
+    print(f"Parâmetros: {sum(p.numel() for p in model.parameters()):,}")
     
-    # 2. Carregar dataset de preferências
-    print("\n2️⃣  Carregando dataset de preferências...")
+    print("\nCarregando dataset de preferências...")
     examples = load_preference_dataset(DATASET_PATH)
     dataset = create_hf_dataset(examples)
     
-    # Dividir em treino e validação
     dataset_split = dataset.train_test_split(test_size=0.1, seed=42)
     train_dataset = dataset_split['train']
     eval_dataset = dataset_split['test']
     
-    print(f"✓ Dados de treino: {len(train_dataset)} exemplos")
-    print(f"✓ Dados de validação: {len(eval_dataset)} exemplos")
+    print(f"Dados de treino: {len(train_dataset)} exemplos")
+    print(f"Dados de validação: {len(eval_dataset)} exemplos")
     
-    # 3. Configurar TrainingArguments com economia de memória
-    print("\n3️⃣  Configurando argumentos de treino...")
+    print("\nConfigurando argumentos de treino...")
     training_args = TrainingArguments(
         output_dir=OUTPUT_DIR,
         num_train_epochs=3,
@@ -96,8 +89,8 @@ def main():
         learning_rate=5e-4,
         lr_scheduler_type="linear",
         warmup_ratio=0.1,
-        fp16=device == "cuda",  # Mixed precision se GPU disponível
-        optim="paged_adamw_32bit",  # Otimizador com economia de memória
+        fp16=device == "cuda",
+        optim="paged_adamw_32bit",
         save_strategy="epoch",
         eval_strategy="epoch",
         logging_steps=10,
@@ -105,10 +98,9 @@ def main():
         seed=42
     )
     
-    print("✓ Argumentos configurados com paged_adamw_32bit (economia de memória)")
+    print("Argumentos configurados com paged_adamw_32bit para economia de memória")
     
-    # 4. Inicializar DPOTrainer
-    print("\n4️⃣  Inicializando DPOTrainer...")
+    print("\nInicializando DPOTrainer...")
     dpo_trainer = DPOTrainer(
         model=model,
         ref_model=model_ref,
@@ -116,28 +108,25 @@ def main():
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
         tokenizer=tokenizer,
-        beta=BETA,  # Divergência KL penalty
+        beta=BETA,
         max_prompt_length=256,
         max_length=512,
     )
     
-    print(f"✓ DPOTrainer inicializado com beta={BETA}")
-    print(f"  Beta atua como 'imposto' na divergência KL entre policy e reference model")
+    print(f"DPOTrainer inicializado com beta={BETA}")
+    print("Beta atua como penalidade na divergência KL entre policy e reference model")
     
-    # 5. Treinar modelo
-    print("\n5️⃣  Iniciando treinamento DPO...")
+    print("\nIniciando treinamento DPO...")
     print("-" * 60)
     dpo_trainer.train()
     print("-" * 60)
     
-    # 6. Salvar modelo treinado
-    print("\n6️⃣  Salvando modelo treinado...")
+    print("\nSalvando modelo treinado...")
     dpo_trainer.model.save_pretrained(OUTPUT_DIR)
     tokenizer.save_pretrained(OUTPUT_DIR)
-    print(f"✓ Modelo salvo em: {OUTPUT_DIR}")
+    print(f"Modelo salvo em: {OUTPUT_DIR}")
     
-    # 7. Validação - Teste com prompts de segurança
-    print("\n7️⃣  Validação - Testando supressão de respostas prejudiciais...")
+    print("\nValidação - Testando supressão de respostas prejudiciais...")
     print("=" * 60)
     
     model.eval()
@@ -150,9 +139,8 @@ def main():
     ]
     
     for prompt in test_prompts:
-        print(f"\n📝 Prompt: {prompt}")
+        print(f"\nPrompt: {prompt}")
         
-        # Tokenizar prompt
         inputs = tokenizer(
             prompt,
             return_tensors="pt",
@@ -160,7 +148,6 @@ def main():
             max_length=256
         ).to(device)
         
-        # Gerar resposta
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
@@ -172,11 +159,11 @@ def main():
             )
         
         response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-        print(f"🤖 Resposta: {response}\n")
+        print(f"Resposta: {response}\n")
     
     print("=" * 60)
-    print("✅ Pipeline DPO concluído com sucesso!")
-    print(f"📊 Modelo treinado salvo em: {OUTPUT_DIR}")
+    print("Pipeline DPO concluído com sucesso!")
+    print(f"Modelo treinado salvo em: {OUTPUT_DIR}")
     
 
 if __name__ == "__main__":

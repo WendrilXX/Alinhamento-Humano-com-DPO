@@ -1,20 +1,18 @@
 # Alinhamento Humano com DPO - Laboratory de AI Safety
 
-## 🎯 Objetivo
+Implementar um pipeline de Direct Preference Optimization (DPO) para alinhar um Large Language Model (LLM) com preferências humanas, garantindo comportamento Útil, Honesto e Inofensivo (HHH - Helpful, Honest, Harmless).
 
-Implementar um pipeline de **Direct Preference Optimization (DPO)** para alinhar um Large Language Model (LLM) com preferências humanas, garantindo comportamento Útil, Honesto e Inofensivo (HHH - Helpful, Honest, Harmless).
-
-## 📋 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 ├── Doc.md                      # Especificação do laboratório
-├── preferences_dataset.jsonl   # Dataset de 35+ exemplos de preferências
+├── preferences_dataset.jsonl   # Dataset de 43 exemplos de preferências
 ├── train_dpo.py               # Pipeline de treinamento DPO
 ├── requirements.txt           # Dependências do projeto
 └── README.md                  # Este arquivo
 ```
 
-## 🔍 Papel Matemático do Hiperparâmetro Beta (β)
+## Papel Matemático do Hiperparâmetro Beta (β)
 
 ### Conceito Fundamental
 
@@ -73,9 +71,9 @@ Com β = 0.1:
 - Preserva características linguísticas onde não há conflito
 ```
 
-## 📊 Dataset de Preferências
+## Dataset de Preferências
 
-O arquivo `preferences_dataset.jsonl` contém **35 exemplos** com o formato obrigatório:
+O arquivo preferences_dataset.jsonl contém 43 exemplos com o formato obrigatório:
 
 ```json
 {
@@ -121,13 +119,13 @@ python train_dpo.py
 ```
 
 Este comando irá:
-1. ✅ Carregar modelo GPT-2 (modelo compacto para demonstração)
-2. ✅ Validar dataset de preferências
-3. ✅ Configurar TrainingArguments com `paged_adamw_32bit` (economia de memória)
-4. ✅ Inicializar DPOTrainer com β = 0.1
-5. ✅ Executar treinamento por 3 epochs
-6. ✅ Salvar modelo treinado em `./dpo_model`
-7. ✅ Validar modelo com prompts de teste
+1. Carregar modelo GPT-2 (modelo compacto para demonstração)
+2. Validar dataset de preferências
+3. Configurar TrainingArguments com `paged_adamw_32bit` (economia de memória)
+4. Inicializar DPOTrainer com β = 0.1
+5. Executar treinamento por 3 epochs
+6. Salvar modelo treinado em `./dpo_model`
+7. Validar modelo com prompts de teste
 
 ### Saída Esperada
 
@@ -136,7 +134,7 @@ Após o treinamento, o script testará o modelo com prompts maliciosos e mostrar
 - Respostas seguras foram fortalecidas
 - O modelo mantém fluência linguística
 
-## 🔧 Estratégias de Economia de Memória
+## Estratégias de Economia de Memória
 
 O pipeline implementa:
 
@@ -147,7 +145,7 @@ O pipeline implementa:
 
 Essas técnicas permitem treinar mesmo em GPUs com <6GB VRAM.
 
-## 📝 Política de Integridade
+## Política de Integridade
 
 **Partes geradas/complementadas com IA, revisadas por [Seu Nome]**
 
@@ -161,18 +159,18 @@ Todas as partes foram revisadas criticamente para garantir:
 - Adequação aos requisitos
 - Originalidade e integridade
 
-## 📚 Referências
+## Referências
 
 - Rafailov et al. (2023): "Direct Preference Optimization: Your Language Model is Secretly a Reward Model"
 - Hugging Face TRL: https://huggingface.co/docs/trl/
 - Alinhamento de LLM: https://arxiv.org/abs/2304.06767
 
-## 📞 Contato
+## Contato
 
 Para dúvidas sobre implementação ou teoria, consulte a documentação do laboratório.
 
 ---
 
-**Status**: ✅ Implementado e testado  
+**Status**: Implementado e testado  
 **Data**: Abril 2026  
 **Tag**: v1.0
